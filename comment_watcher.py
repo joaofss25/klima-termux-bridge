@@ -43,6 +43,16 @@ from pathlib import Path
 
 import requests
 
+# V.0.2.38: mesmo contorno do instagram_bot.py (ver comentário lá) — bug
+# real do pydantic 1.10.x (a única versão que instala nesse celular 32-bit
+# ARM) rodando num Python 3.14 novo demais pra ele. Só desliga uma checagem
+# de sanidade na hora de DEFINIR a classe, não muda validação em runtime.
+try:
+    import pydantic.class_validators as _pcv
+    _pcv.ValidatorGroup.check_for_unused = lambda self: None
+except Exception:
+    pass
+
 try:
     from instagrapi import Client
 except ImportError:

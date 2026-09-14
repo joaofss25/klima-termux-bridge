@@ -49,6 +49,22 @@ from pathlib import Path
 
 import requests
 
+# V.0.2.38: contorna um bug real do pydantic 1.10.x (a única versão que
+# INSTALA nesse celular — é 32-bit ARM, pydantic 2+ precisa de um núcleo em
+# Rust que não compila aqui, ver requirements.txt) rodando num Python novo
+# demais pra ele (3.14, que o Termux já traz por padrão). O
+# ValidatorGroup.check_for_unused() do pydantic 1.10.x acusa falso-positivo
+# ("Validators defined with incorrect fields") em validadores que SÃO
+# válidos — é só uma checagem de sanidade na hora de DEFINIR a classe, não
+# muda nenhum comportamento de validação em tempo de execução, então
+# desligá-la é seguro. Precisa vir ANTES de importar o instagrapi (que é
+# quem de fato define as classes que disparam o bug).
+try:
+    import pydantic.class_validators as _pcv
+    _pcv.ValidatorGroup.check_for_unused = lambda self: None
+except Exception:
+    pass
+
 try:
     from instagrapi import Client
     from instagrapi.exceptions import ChallengeRequired, LoginRequired, ClientError
