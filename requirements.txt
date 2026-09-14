@@ -1,5 +1,11 @@
 # Dependências do instagram_bot.py (Python) — instale com:
 #   pip install -r requirements.txt
 # Isso é SEPARADO do bridge.mjs (Node.js/npm), que usa o package.json ao lado.
-instagrapi==2.1.2
+#
+# instagrapi>=3.0 (não fixamos um patch exato de propósito) porque essa
+# faixa já detecta Android/Termux sozinha e pede uma versão do pydantic com
+# wheel pré-compilado pra essa plataforma — versões mais antigas (ex: 2.1.2)
+# puxavam um pydantic que só tinha código-fonte, obrigando o pip a compilar
+# Rust NO CELULAR (trava/falha na maioria dos Android — sem toolchain).
+instagrapi>=3.0.2
 requests==2.32.3
