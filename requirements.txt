@@ -1,14 +1,32 @@
 # Dependências do instagram_bot.py (Python) — instale com:
-#   pkg install rust binutils -y   (1x só — precisa pra compilar o pydantic-core)
 #   pip install -r requirements.txt
 # Isso é SEPARADO do bridge.mjs (Node.js/npm), que usa o package.json ao lado.
 #
-# V.0.2.32 (2ª tentativa): instagrapi>=3.0 puxa "curl_cffi", que tem um bug
-# real no script de build dele — não reconhece 'armv8l' (o uname que o
-# Termux devolve), então SEMPRE falha ao compilar, em qualquer Termux.
-# Voltamos pra 2.1.5, a última versão antes do curl_cffi virar dependência
-# (usa só `requests`, sem esse problema). Ainda depende do pydantic 2.x
-# (via pydantic-core, Rust) — esse aqui compila BEM no Termux, só precisa
-# do `pkg install rust binutils` acima antes do pip install.
-instagrapi==2.1.5
+# V.0.2.32 (3ª tentativa): descobrimos que o celular é ARM de 32 bits
+# (armeabi-v7a, confirmado via `getprop ro.product.cpu.abi`) — e pacotes
+# Python escritos em Rust (pydantic-core, curl_cffi) praticamente só
+# publicam wheel pra 64 bits (arm64_v8a). Sem wheel pronta, o pip tenta
+# compilar com `maturin`, que nem RECONHECE arquitetura de 32 bits
+# ("Unsupported Android architecture: armv8l") — trava sempre, em
+# qualquer versão recente do instagrapi, não tem como contornar instalando
+# Rust (o Rust nem chega a ser usado, falha antes disso).
+#
+# Única saída real: voltar pra ANTES do instagrapi migrar pro pydantic 2
+# (Rust) — pydantic 1.x é Python puro (sem Rust nenhum). É uma versão
+# antiga (mar/2023) — funcionalmente deve bastar pro que o bot faz (login,
+# publicar foto/álbum), mas existe risco real do Instagram rejeitar por
+# parecer um app desatualizado. Se o login falhar com erro do PRÓPRIO
+# Instagram (não erro de instalação), é esse o motivo — me avise com o
+# erro exato que a gente vê a próxima opção.
+#
+# NÃO instale com "pip install -r requirements.txt" puro — o instagrapi
+# 1.16.42 também pede `moviepy` (só usado pra vídeo/reels, que o bot NUNCA
+# usa aqui, só foto/álbum) e o moviepy traz o `numpy` junto, outro pacote
+# pesado que também pode travar em 32 bits. Instale em 2 passos (ver
+# README.md — "Setup inicial"):
+#   pip install pydantic==1.10.5 requests==2.32.3 pycryptodomex PySocks
+#   pip install instagrapi==1.16.42 --no-deps
+pydantic==1.10.5
 requests==2.32.3
+pycryptodomex
+PySocks

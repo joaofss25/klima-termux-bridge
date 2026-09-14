@@ -32,7 +32,11 @@ comando só, sempre que eu mandar uma atualização.
    cd ~/klima-whatsapp-bridge
    ```
 3. **Node.js**: `npm install` (usa o `package.json` já existente).
-4. **Python**: `pip install -r requirements.txt` (instala o `instagrapi`).
+4. **Python** (2 passos — ver comentário no topo do `requirements.txt` pra entender por quê):
+   ```
+   pip install -r requirements.txt
+   pip install instagrapi==1.16.42 --no-deps
+   ```
 5. **Crie o `.env`** (esse arquivo NUNCA vai pro GitHub — fica só neste celular):
    ```
    cp .env.example .env
