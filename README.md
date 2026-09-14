@@ -1,14 +1,21 @@
 # Klima — bridges do Termux (WhatsApp + Instagram)
 
-Dois processos separados que rodam no celular (via Termux + pm2), cada um falando com o painel
+Processos separados que rodam no celular (via Termux + pm2), cada um falando com o painel
 do Klima (Render) por polling HTTP. Ficam nesta MESMA pasta de propósito — "uma coisa só" — mas
-são independentes: um é Node.js (WhatsApp, via Baileys), o outro é Python (Instagram, via
-instagrapi). Um pode estar pausado/quebrado sem afetar o outro.
+são independentes: um é Node.js (WhatsApp, via Baileys), os outros são Python (Instagram, via
+instagrapi). Um pode estar pausado/quebrado sem afetar os outros.
 
-| Processo (pm2)     | Arquivo             | Linguagem | O que faz                                   |
-|---------------------|----------------------|-----------|----------------------------------------------|
-| `klima-whatsapp`    | `bridge.mjs`         | Node.js   | Manda mensagens de WhatsApp da fila do Klima |
-| `klima-instagram`   | `instagram_bot.py`   | Python    | Publica o carrossel de notícias no Instagram |
+| Processo (pm2)       | Arquivo               | Linguagem | O que faz                                        |
+|----------------------|------------------------|-----------|---------------------------------------------------|
+| `klima-whatsapp`     | `bridge.mjs`           | Node.js   | Manda mensagens de WhatsApp da fila do Klima     |
+| `klima-instagram`    | `instagram_bot.py`     | Python    | Publica o carrossel de notícias no Instagram     |
+| `klima-dm-watcher`   | `comment_watcher.py`   | Python    | (Opcional, desligado por padrão) responde comentário + DM |
+
+O `klima-dm-watcher` só sobe se `DM_BRIDGE_SECRET` estiver preenchido no `.env` — deixe em branco
+pra nunca rodar esse processo. Mesmo rodando, ele só age de verdade se "DM automático" estiver
+**ligado** no painel ADM (📸 Posts → 💬 DMs) — é uma automação avançada, com risco real de restrição
+de conta (leia o aviso no próprio painel antes de ligar). Precisa do `instagram_bot.py` já ter
+feito o primeiro login (reaproveita a mesma sessão salva em `session.json`).
 
 ## Atualizar depois (uso do dia a dia)
 

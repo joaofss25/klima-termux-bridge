@@ -143,11 +143,11 @@ def buscar_fila():
     return resp.json()
 
 
-def confirmar_post(post_id, ok, erro=None):
+def confirmar_post(post_id, ok, erro=None, media_id=None):
     try:
         requests.post(
             f"{KLIMA_API_BASE}/api/instagram/confirmar",
-            json={"secret": BRIDGE_SECRET, "id": post_id, "ok": ok, "erro": erro},
+            json={"secret": BRIDGE_SECRET, "id": post_id, "ok": ok, "erro": erro, "media_id": media_id},
             timeout=15,
         )
     except Exception as exc:
@@ -222,9 +222,13 @@ def publicar_carrossel(post):
         time.sleep(random.randint(5, 12))
 
         if len(caminhos) == 1:
-            cl.photo_upload(caminhos[0], caption=post["caption"])
+            media = cl.photo_upload(caminhos[0], caption=post["caption"])
         else:
-            cl.album_upload(caminhos, caption=post["caption"])
+            media = cl.album_upload(caminhos, caption=post["caption"])
+        # V.0.2.33: o pk do post publicado é como o Klima liga "comentário
+        # nesse post" ao link certo (ver comment_watcher.py) — devolve pra
+        # quem chamou salvar no confirmar_post.
+        return str(media.pk) if media and getattr(media, "pk", None) else None
 
 
 # ---------- Loop principal ----------
@@ -245,9 +249,9 @@ def processar_uma_rodada():
     posts = dados.get("posts") or []
     for post in posts:
         try:
-            publicar_carrossel(post)
-            confirmar_post(post["id"], True)
-            log(f"✅ Post #{post['id']} publicado no Instagram.")
+            media_id = publicar_carrossel(post)
+            confirmar_post(post["id"], True, media_id=media_id)
+            log(f"✅ Post #{post['id']} publicado no Instagram (media_id={media_id}).")
         except ChallengeRequired:
             confirmar_post(post["id"], False, "ChallengeRequired — verificação manual pendente")
             global _client

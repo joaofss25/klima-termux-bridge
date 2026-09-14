@@ -14,3 +14,6 @@ set +a
 
 pm2 start bridge.mjs --name klima-whatsapp
 pm2 start instagram_bot.py --name klima-instagram --interpreter python3
+if [ -n "$DM_BRIDGE_SECRET" ]; then
+    pm2 start comment_watcher.py --name klima-dm-watcher --interpreter python3
+fi

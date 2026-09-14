@@ -49,6 +49,14 @@ pm2 start bridge.mjs --name klima-whatsapp
 pm2 delete klima-instagram > /dev/null 2>&1
 pm2 start instagram_bot.py --name klima-instagram --interpreter python3
 
+# V.0.2.33: 3º processo, opcional — só liga se DM_BRIDGE_SECRET estiver
+# preenchido no .env (deixa vazio pra não subir esse processo de jeito
+# nenhum, já que ele fica desligado por padrão no painel ADM mesmo assim).
+if [ -n "$DM_BRIDGE_SECRET" ]; then
+    pm2 delete klima-dm-watcher > /dev/null 2>&1
+    pm2 start comment_watcher.py --name klima-dm-watcher --interpreter python3
+fi
+
 # Avisa na tela do celular (precisa do Termux:API, que você já tem) que
 # deu certo — não depende de olhar o log pra saber que voltou sozinho.
 termux-notification --title "Klima" --content "Bridges do WhatsApp e Instagram reiniciados automaticamente após o boot." 2>/dev/null
