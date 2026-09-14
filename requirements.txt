@@ -1,0 +1,5 @@
+# Dependências do instagram_bot.py (Python) — instale com:
+#   pip install -r requirements.txt
+# Isso é SEPARADO do bridge.mjs (Node.js/npm), que usa o package.json ao lado.
+instagrapi==2.1.2
+requests==2.32.3

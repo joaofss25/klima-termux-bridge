@@ -1,0 +1,5 @@
+# Força final de linha LF em texto/scripts — sem isso, um commit feito no
+# Windows pode salvar CRLF, e um shell script com CRLF quebra no Termux
+# (Linux) com erro "$'\r': command not found".
+* text=auto eol=lf
+*.sh text eol=lf

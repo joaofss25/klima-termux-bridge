@@ -1,0 +1,9 @@
+{
+  "name": "klima-whatsapp-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bridge WhatsApp (Baileys) rodando no Termux — fala com o Klima por polling. Não faz parte do deploy do Klima no Render; roda separado, no celular.",
+  "type": "module",
+  "main": "bridge.mjs"
+}
+

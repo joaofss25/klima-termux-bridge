@@ -1,0 +1,13 @@
+# Segredos e sessões — nunca sobem pro GitHub.
+.env
+session.json
+auth_state/
+*.log
+
+# Dependências (reinstaladas com npm install / pip install a cada clone).
+node_modules/
+__pycache__/
+*.pyc
+
+# Arquivo antigo, não faz parte do projeto de verdade.
+packwsage.zip
